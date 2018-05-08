@@ -1,0 +1,17 @@
+{
+  "mysql": {
+    "host": "localhost",
+    "user": "root",
+    "password": "123456",
+    "database": "quiz_management",
+    "multipleStatements": "true"
+  },
+
+  "session": {
+    "secret": "secret",
+    "saveUninitialized": "true",
+    "resave": "false",
+    "cookie": "{ secure: true }"
+  }
+}
+

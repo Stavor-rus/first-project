@@ -1,0 +1,23 @@
+<h1>{{title}}</h1>
+{{#if errors}}
+    {{#each errors}}
+        <div class="alert alert-danger">
+            {{this.msg}}
+        </div>
+    {{/each}}
+{{/if}}
+<form method="post" action="register">
+    <div class="form-group col-4">
+        <label for="InputName">Name</label>
+        <input type="name" class="form-control" name="InputName" placeholder="Enter name">
+    </div>
+    <div class="form-group col-4">
+        <label for="InputEmail">Email address</label>
+        <input type="email" class="form-control" name="InputEmail" aria-describedby="emailHelp" placeholder="Enter email">
+    </div>
+    <div class="form-group col-4">
+        <label for="InputPassword">Password</label>
+        <input type="password" class="form-control" name="InputPassword" placeholder="Password">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
