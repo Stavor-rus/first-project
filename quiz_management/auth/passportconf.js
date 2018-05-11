@@ -1,20 +1,13 @@
-//passport strategy
+//Passport стратегия
 const passport = require('passport'),
       LocalStrategy = require('passport-local').Strategy,
       user = require('../models/user');
 
 module.exports = function(passport) {
-    passport.serializeUser(function(user, done) {
-        done(null, user.id);
-    });
 
-    passport.deserializeUser(function(id, done) {
-        user.getUserById(id, function(err,results){
-            done(err, results[0]);
-        });
-    });
-
-    passport.use( new LocalStrategy(
+    passport.use( new LocalStrategy({
+        usernameField: 'InputAuthEmail',
+        passwordField: 'InputAuthPassword'},
         function(username, password, done) {
             user.getUserByEmail(username, function (err, results) {
                 if (err) {
@@ -35,4 +28,15 @@ module.exports = function(passport) {
             });
         }
     ));
+
+    passport.serializeUser(function(user, done) {
+        done(null, user.id);
+    });
+
+    passport.deserializeUser(function(id, done) {
+        user.getUserByEmail(id, function(err,results){
+            done(err, results[0]);
+        });
+    });
+
 };

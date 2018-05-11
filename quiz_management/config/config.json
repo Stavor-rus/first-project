@@ -9,9 +9,8 @@
 
   "session": {
     "secret": "secret",
-    "saveUninitialized": "true",
-    "resave": "false",
-    "cookie": "{ secure: true }"
+    "saveUninitialized": "false",
+    "resave": "false"
   }
 }
 

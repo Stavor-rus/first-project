@@ -10,17 +10,17 @@ const express = require('express'),
 **************/
 
 //Домашняя страница
-router.get('/', function (req, res, next) {
+router.get('/', function (req, res) {
     res.render('index', {title: 'Добро пожаловать в Quizzes And Questions!'});
 });
 
 //Страница логина
-router.get('/login', function (req, res, next) {
+router.get('/login', function (req, res) {
     res.render('login', {title: 'Вход в систему'});
 });
 
 //Страница регистрации
-router.get('/register', function (req, res, next) {
+router.get('/register', function (req, res) {
     res.render('register', {title: 'Регистрация пользователя'});
 });
 
@@ -32,6 +32,9 @@ router.get('/register', function (req, res, next) {
 
 //Регистрация пользователя
 router.post('/register', user_controller.UserRegistration);
+
+//Авторизация пользователя
+router.post('/login', user_controller.UserLogin);
 
 
 

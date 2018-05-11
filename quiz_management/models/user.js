@@ -1,11 +1,10 @@
 const config = require('../config/config'),
-      flash = require('connect-flash'),
       mysql = require('mysql'),
+      con = mysql.createConnection(config.mysql),
       bcrypt = require('bcryptjs'),
       salt = bcrypt.genSaltSync(10);
 
 //Подключение к БД
-const con = mysql.createConnection(config.mysql);
 con.connect(function (err) {
     if (err) {
         console.error('Ошибка подключения: ' + err.stack);
@@ -14,33 +13,49 @@ con.connect(function (err) {
     console.log('Подключение к БД успешно');
 });
 
-//Заносит пользователя в базу
-module.exports.CreateUser = function (inputForm, callback){
+//Проверяет есть ли пользователь в базе
+module.exports.CreateUser = function (inputRegForm, callback) {
 
-    bcrypt.hash(inputForm.password, salt, function(err, hash) {
-        const sql = "INSERT INTO `users` (`user_name`, `user_password`, `user_email`) VALUES ('" + inputForm.name + "', '" + hash + "', '" + inputForm.email + "')";
-callback(null, hash);
-        con.query(sql, function (err, result) {
+    const checkUser = "SELECT * FROM `users` WHERE `user_email` = ('" + inputRegForm.email + "')";
+    con.query(checkUser, function (err, results) {
 
+//Если пользователя нет, заносит в базу
+    if (results == '') {
+        bcrypt.hash(inputRegForm.password, salt, function (err, hash) {
+
+            const addUser = "INSERT INTO `users` (`user_name`, `user_password`, `user_email`) VALUES ('" + inputRegForm.name + "', '" + hash + "', '" + inputRegForm.email + "')";
+            con.query(addUser, function (err, result) {
+                if (err) throw err;
+                callback (null, true);
+            });
         });
+    } //if
+        else {
+        callback (true);
+    }
+  });
+}; //Начало модуля CreateUser
+
+
+//Ищет пользователя в базе и проверяет введённые данные с данными в БД
+//Обращается к базе, ищет пользователя по email
+module.exports.getUserByEmail = function (username, callback) {
+    const findUser = "SELECT * FROM `users` WHERE `user_email` = ('" + username + "')";
+    con.query(findUser, function (err, results) {
+        if (err) throw err;
+        callback(null, results);
     });
 };
 
+//Сравнивает введённые пароли с базой
+module.exports.comparePassword = function (password, hash, callback) {
+    bcrypt.compare(password, hash, function (err, isMatch) {
+        if (err) throw err;
+        callback(null, isMatch);
+    });
+  };
 
 
 
 
 
-
-
-//con.query('SELECT * FROM `users` WHERE `user_email` = ?', newUser.email, function (error, results) {
-//    if (results == '') {
-//        bcrypt.hash("password", salt, function (err, hash) {
-//            var sql = 'INSERT INTO users SET ?';
-//            var userValues = {user_email: email, user_password: hash, user_name: name};
-//            con.query(sql, userValues, function (err) {
-//                if (err) throw err;
-//            });
-//        });
-//    }
-//});
